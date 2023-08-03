@@ -1,0 +1,46 @@
+{
+  "user": [
+    {
+      "Stock_name": "Balchem Corp",
+      "Stock_price": "123.58000",
+      "Stock_qty": 13,
+      "Total_price": 1606.54,
+      "id": 1
+    },
+    {
+      "Stock_name": "Midatech Pharma PLC",
+      "Stock_price": "1.92000",
+      "Stock_qty": 29,
+      "Total_price": 55.68,
+      "id": 2
+    },
+    {
+      "Stock_name": "ATA Creativity Global",
+      "Stock_price": "2.85000",
+      "Stock_qty": 58,
+      "Total_price": 165.3,
+      "id": 3
+    },
+    {
+      "Stock_name": "Anika Therapeutics Inc",
+      "Stock_price": "40.15000",
+      "Stock_qty": 16,
+      "Total_price": 642.4,
+      "id": 4
+    },
+    {
+      "Stock_name": "China XD Plastics Co Ltd",
+      "Stock_price": "1.03000",
+      "Stock_qty": 24,
+      "Total_price": 24.72,
+      "id": 5
+    },
+    {
+      "Stock_name": "Intel Corp",
+      "Stock_price": "56.61500",
+      "Stock_qty": 62,
+      "Total_price": 3510.13,
+      "id": 6
+    }
+  ]
+}

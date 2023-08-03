@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Paper Trading</title>
+    <link rel="stylesheet" type="text/css" href="Paper-Trading.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+</head>
+<body>
+    <script>
+        //trading jquery
+        var price_perstock;
+        const settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "https://twelve-data1.p.rapidapi.com/stocks?exchange=NASDAQ&format=json",
+            "method": "GET",
+            "headers": {
+                "x-rapidapi-key": "c0814d9853mshfbb1f1bebabed58p1a122djsn84cca924198d",
+                "x-rapidapi-host": "twelve-data1.p.rapidapi.com"
+            }
+        };
+        var sname;
+        var inputstock;
+        var s_symbol;
+        var total;
+        $.ajax(settings).done(function (response) { 
+            console.log(response);
+            console.log(response.data.length);
+            $("#St_name").mousedown(function () {
+                inputstock = $("#St_name").val();
+                console.log(inputstock);
+                for (var i = 0; i < response.data.length; i++) {
+                    sname = response.data[i].name;
+                    if (sname == inputstock) {
+                        console.log("yes");
+                        s_symbol = response.data[i].symbol;
+                        console.log(s_symbol)
+                        urlnew = "https://twelve-data1.p.rapidapi.com/time_series?symbol=" + s_symbol + "&interval=1day&outputsize=30&format=json";
+                        console.log(urlnew);
+                        return;
+                    }
+                }
+            });
+            $("#btn1").click(function () {
+                const settings2 = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": urlnew,
+                    "method": "GET",
+                    "headers": {
+                        "x-rapidapi-key": "c0814d9853mshfbb1f1bebabed58p1a122djsn84cca924198d",
+                        "x-rapidapi-host": "twelve-data1.p.rapidapi.com"
+                    }
+                };
+                $.ajax(settings2).done(function (response1) {
+                    console.log(response1);
+                    price_perstock = response1.values[0].open;
+                    $("#per_stock_price").val(price_perstock);
+                    $("#company").html(sname);
+                    $("#open").html(response1.values[0].open); 
+                    $("#high").html(response1.values[0].high);
+                    $("#low").html(response1.values[0].low);
+                    $("#close").html(response1.values[0].close);
+                    $("#volume").html(response1.values[0].volume);
+                    console.log(price_perstock);
+                });
+            });
+            var quantity;
+            $("#St_Quantity").mousedown(function () {
+                quantity = $("#St_Quantity").val() * 1;
+                console.log(typeof(quantity));
+                total = quantity * price_perstock;
+                $("#total_price").val(total);
+            });
+            $("#btn3").click(function () {
+                //ajax get --> loop
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:3000/user",
+                    contentType: "application/json; charset=utf-16",//16,32
+                    dataType: "json",
+                    success: function (check_response) {
+                        console.log(check_response);
+                        console.log(check_response.length);
+                        console.log(check_response[0].Total_price);
+                        var flag = true;
+                        for (var j = 0; j < check_response.length; j++) {
+                            if (check_response[j].Stock_name == sname) {
+                                flag = false;
+                                var new_total = total + check_response[j].Total_price;
+                                var new_qty = quantity + check_response[j].Stock_qty;
+                                console.log(new_total);
+                                var k =j+1;
+                                var new_url =  "http://localhost:3000/user/"+k;
+                                data_temp1 = JSON.stringify({
+                                    Stock_name: sname,
+                                    Stock_price: price_perstock,
+                                    Stock_qty: new_qty,
+                                    Total_price: new_total
+                                }); 
+                                $.ajax({
+                                    type:"PUT",
+                                    contentType: "application/json; charset=utf-8",
+                                    url: new_url,
+                                    dataType: "json",
+                                    data: data_temp1,
+                                    success: function (data) {
+                                        console.log(data);
+                                        location.reload();
+                                    },
+                                    error: function (result) {
+                                        console.log("Error");
+                                    }
+                                });
+                                break;
+                            }
+                        }
+                        if(flag == true){
+                            data_temp = JSON.stringify({
+                                Stock_name: sname,
+                                Stock_price: price_perstock,
+                                Stock_qty: quantity,
+                                Total_price: total
+                            });
+                            $.ajax({
+                                type: "POST",
+                                url: "http://localhost:3000/user",
+                                contentType: "application/json; charset=utf-16",//16,32
+                                dataType: "json",
+                                data: data_temp,
+                                success: function (data) {
+                                    console.log(data);
+                                },
+                                error: function (data) {
+                                    console.log(data);
+                                }
+                            });
+                        }
+                    },
+                    error: function (check_response) {
+                        console.log(check_response);
+                    }
+                });
+            });
+        });
+        // portfolio jquery
+
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:3000/user",
+            contentType: "application/json; charset=utf-16",//16,32
+            dataType: "json",
+            success: function (check_response) {
+                
+                str = "<tr><th>"+"Stock" +"</th><th>"+"Open"
+                    +"</th><th>"+"Quantity"+"</th><th>"+"Market Value"
+                    +"</th><th>"+"Buy More"+"</th><th>"+"Sell"+"</th></tr>";
+                str= "<table border='1' class='st_table'>" + str ;
+                for (var j = 0; j < check_response.length; j++) {
+                    str+="<tr><td>"+check_response[j].Stock_name 
+                    +"</td><td>"+check_response[j].Stock_price
+                    +"</td><td>"+check_response[j].Stock_qty
+                    +"</td><td>"+check_response[j].Total_price
+                    +"</td><td class='buy'><b>Buy</b>"
+                    +"</td><td class= 'sell'><b>Sell</b>"
+                    +"</td></tr>"
+                }
+                str+="</table>"
+                $(".mytrade").html(str);
+                
+                $(".sell").click(function(){
+                    var row_index = $(this).parent().index('tr')-1;
+                    console.log(row_index);
+                    //var col_index = $(this).index('tr:eq('+row_index+') td');
+                    var num_stock = prompt("SELL: "+check_response[row_index].Stock_name,"10");
+                    console.log(num_stock);
+                    console.log(check_response[row_index].Stock_qty);
+                    console.log(num_stock <= check_response[row_index].Stock_qty);
+                    //alert("You sold "+num_stock+" stocks of "+ check_response[row_index].Stock_name);
+                    if(num_stock <= check_response[row_index].Stock_qty && num_stock > 0){
+                        
+                        console.log(num_stock);
+                        var new_qty = check_response[row_index].Stock_qty - num_stock;
+                        var new_total = check_response[row_index].Stock_price * new_qty;
+                        console.log(new_total);
+                        var k = row_index+1;
+                        var new_url =  "http://localhost:3000/user/"+k;
+                        data_temp1 = JSON.stringify({
+                            Stock_name: check_response[row_index].Stock_name,
+                            Stock_price: check_response[row_index].Stock_price,
+                            Stock_qty: new_qty,
+                            Total_price: new_total
+                        }); 
+                        $.ajax({
+                            type:"PUT",
+                            contentType: "application/json; charset=utf-8",
+                            url: new_url,
+                            dataType: "json",
+                            data: data_temp1,
+                            success: function (data) {
+                                console.log(data);
+                                location.reload();
+                            },
+                            error: function (result) {
+                                console.log("Error");
+                            }
+
+                        });
+                        alert("You sold "+num_stock+" stocks of "+ check_response[row_index].Stock_name);
+                    }
+                    else if (num_stock > check_response[row_index].Stock_qty){
+                        alert("You can not SELL More Than "+check_response[row_index].Stock_qty +" stocks")
+                    }
+                    else if (num_stock == 0){
+                        alert("You didn't enter any quantity")
+                    }
+                });
+                $(".buy").click(function(){
+                    var row_index = $(this).parent().index('tr')-1;
+                    console.log(row_index);
+                    //var col_index = $(this).index('tr:eq('+row_index+') td');
+                    var num_stock = prompt("BUY: "+check_response[row_index].Stock_name,"10")*1;
+                    console.log(num_stock);
+                    console.log(check_response[row_index].Stock_qty);
+                    console.log(num_stock <= check_response[row_index].Stock_qty);
+                    
+                    if(num_stock <= 100 && num_stock > 0){
+                        console.log(num_stock);
+                        var new_qty = check_response[row_index].Stock_qty + num_stock;
+                        var new_total = check_response[row_index].Stock_price * new_qty;
+                        console.log(new_total);
+                        var k = row_index+1;
+                        var new_url =  "http://localhost:3000/user/"+k;
+                        data_temp1 = JSON.stringify({
+                            Stock_name: check_response[row_index].Stock_name,
+                            Stock_price: check_response[row_index].Stock_price,
+                            Stock_qty: new_qty,
+                            Total_price: new_total
+                        }); 
+                        $.ajax({
+                            type:"PUT",
+                            contentType: "application/json; charset=utf-8",
+                            url: new_url,
+                            dataType: "json",
+                            data: data_temp1,
+                            success: function (data) {
+                                console.log(data);
+                                location.reload();
+                            },
+                            error: function (result) {
+                                console.log("Error");
+                            }
+
+                        });
+                        alert("You bought "+num_stock+" stocks of "+ check_response[row_index].Stock_name);
+                    }
+                    else if (num_stock > 100){
+                        alert("You can not BUY More Than 100 stocks")
+                    }
+                    else if (num_stock == 0){
+                        alert("You didn't enter any quantity")
+                    }
+                });
+            },
+            error: function (check_response) {
+                console.log(check_response);
+            }
+
+        });
+    </script>
+    <div class="header">
+        <h1>PAPER TRADING</h1>
+    </div>
+    <div class="tab">
+        <button class="tablinks" id="defaultOpen" onclick ="openTab(event, 'Portfolio')">
+        PORTFOLIO
+        </button>
+        <button class="tablinks"  onclick ="openTab(event, 'Trade')">
+            TRADE
+        </button>
+    </div>
+    <div id="Portfolio" class="tabcontent">
+        <div class="mytrade"></div>
+    </div>
+    <div id="Trade" class="tabcontent">
+        <div class="form1" id="form-1">
+            <label>
+                Company  
+            </label><br>
+            <span id="company" class="print"></span><br>
+            <label>
+                Open :
+            </label>
+            <span id="open" class="print"></span><br>
+            <label>
+                High :  
+            </label>
+            <span style="color:green;font-weight:200">
+                &#8657
+            </span>
+            <span id="high" class="print"></span><br>
+            <label>
+                Low :
+            </label>
+            <span style="color:red;">
+                &#8659
+            </span> 
+           <span id="low" class="print"></span><br>
+            <label>
+                Close :
+            </label>
+            <span id="close" class="print"></span><br>
+            <label>
+                Volume :
+            </label>
+            <span id="volume" class="print"></span><br>
+        </div>
+        <div class="form2" id ="form-2">
+            <label>
+                Company  
+            </label><br>
+            <input id="St_name" type="text" value="ATA Creativity Global">
+            <button class="buttons" id="btn1">
+                Check
+            </button><br>
+            <label>
+                Quantity 
+            </label><br>
+            <input id="St_Quantity" type="number" value="10"><br>
+            <label>
+                Market Price 
+            </label> <br>
+            <input id="per_stock_price"></input><br>
+            <label>
+                Total Price (USD)
+            </label><br>
+            <input id="total_price"></input><br>
+            <button class="buttons" id="btn3">
+                Buy
+            </button>
+        </div>
+        
+    </div>
+    <script src="Paper-Trading.js"></script>
+</body>
+</html>

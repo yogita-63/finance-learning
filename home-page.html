@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+    <link rel="stylesheet" href="homepage.css" >
+  </head>
+  
+  <body>
+    <header id="body-header">
+        <h4 id="my-name">We believe in </h4>
+          <h2 id="headingLayout">CREATING MINDS</h2>
+        <button class="btn" onclick="trade()">
+          <h2>Let's Trade</h2>
+        </button>   
+    </header>
+    <main>
+      <div class="classroom left" onclick="classroom()">
+          <h2>My Classroom</h2>
+        </div>
+        <div class="classroom right" onclick="practise()">
+          <h2>Practice</h2>
+        </div>
+    </main>
+    <script type="text/javascript">
+      function classroom(){
+        location.href="myclassroom.html"
+      }
+      function practise(){
+        location.href="practise.html"
+      }
+      function trade(){
+        location.href="Paper-Trading.html"
+      }
+    </script>
+  </body>
+</html>

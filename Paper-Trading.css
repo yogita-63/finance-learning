@@ -1,0 +1,166 @@
+* {
+    margin: 0;
+    padding: 0;
+  }
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: x-large;
+}
+.header {
+    background-image:linear-gradient(to RIGHT ,#312d2d, #1c1c1f,#312d2d);
+    padding: 13px;
+    text-align: center;
+    color: white;
+    font-size: 22px;
+    border:2px solid rgb(24, 23, 27);
+  }
+.tab-content{
+    display: flex;
+    flex-direction: row;
+    flex-flow:row wrap;
+}
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    border: 1px solid rgb(70, 69, 77);
+    background-color: #f1f1f1;
+}
+
+  /* Style the buttons inside the tab */
+  .tab button {
+    width: 50%;
+    background-color: inherit;
+    float: left;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-width: 0 1px 1px 0;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 1s;
+    font-size: 20px;
+    font-weight:bold;
+  }
+  .tab button:before {
+    border-bottom-right-radius: 6px;
+    border-width: 0 1px 1px 0;
+  }
+  .tab button:after {
+    border-bottom-left-radius: 6px;
+    border-width: 0 0 1px 1px;
+  }
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    background-image: linear-gradient(to RIGHT,#bfc3ec, rgb(76, 70, 90) );
+  }
+ 
+  /* Create an active/current tablink class */
+  .tab button.active {
+    background-image: linear-gradient(to RIGHT,#20b2aa, rgb(70, 68, 48) );
+  }
+
+/*portfolio styling */
+.st_table{
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    }
+
+.st_table td, .st_table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    }
+.st_table th{
+    padding: 8px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #1c1c1f;
+    color: rgb(236, 225, 225);
+}
+.st_table td:nth-child(1){
+  color:#021817;
+  font-weight:700;
+}
+.st_table tr:nth-child(even){
+  background-color: #f2f2f2;
+}
+
+.st_table tr:hover {
+  background-color: #ddd;
+}
+/* button sell buy styling*/
+.buy,.sell{
+    text-align: center;
+    padding: 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.buy:hover,.sell:hover{
+    
+    background:linear-gradient(to RIGHT,#20b2aa, rgb(70, 68, 48) );
+    color: white;
+}
+
+/* Trade*/
+
+.form1 , .form2{
+  float:left;
+  margin: 20px 20px 0px 20px;
+  background-color:rgba(219, 218, 201, 0.4); 
+  padding:2%;
+  color: #017a9b;
+  line-height:150%;
+  text-decoration: none;
+  font-size:1em;
+  box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+}
+#form-1{
+  width:20%;
+  height:19.5em;
+  background-color:#e4faf966;
+  line-height:250%;
+}
+.print{
+  color:black;
+}
+#form-2{
+  width:65%;
+}
+input{
+  margin:10px 0px ;
+  padding: 1.2%;
+  border-radius:10px;
+  font-family:inherit;
+  font-size: 0.8em;
+  width:90%;
+  border:0;
+  box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+}
+#St_name{
+  width:80%;
+}
+.buttons{
+  border:none;
+  border-radius: 10px;
+  background-color:#20b2aa;
+  margin:10px 0px ;
+  padding:6px;
+  font-size: 1.1em;
+  color: white;
+  width:92.5%;
+}
+#btn1{
+  width:10%;
+  font-size: 1em;
+}
+#btn3{
+  margin-top:16px;
+}
+.buttons:hover {
+  background:linear-gradient(to RIGHT,#20b2aa, rgb(70, 68, 48) );
+  
+}
